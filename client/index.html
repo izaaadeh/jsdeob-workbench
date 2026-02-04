@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Deobfuscation Workbench</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="logo-text">JSDeob<span class="logo-accent">Workbench</span></span>
+        </div>
+      </div>
+      
+      <div class="header-center">
+        <div class="project-selector">
+          <select id="project-select">
+            <option value="">New Project</option>
+          </select>
+          <button id="btn-new-project" class="btn btn-icon" title="New Project">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+          <button id="btn-save-project" class="btn btn-icon" title="Save Project">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+          </button>
+          <button id="btn-edit-project" class="btn btn-icon" title="Edit Project">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <button id="btn-import" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Import
+        </button>
+        <button id="btn-export" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          Export
+        </button>
+        <button id="btn-settings" class="btn btn-icon" title="Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Left Panel: Recipe Library + Recipe Chain -->
+      <div class="left-panel" id="left-panel">
+        <!-- Sidebar: Recipe Library -->
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-header">
+            <h3>Recipes</h3>
+            <div class="sidebar-header-actions">
+              <button id="btn-new-script" class="btn btn-accent btn-small" title="New Script (Ctrl+E)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="12" y1="18" x2="12" y2="12"></line>
+                  <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                <span>New</span>
+              </button>
+              <button id="btn-reload-plugins" class="btn btn-icon btn-small" title="Reload Plugins">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+              </button>
+              <button id="btn-toggle-sidebar" class="btn btn-icon btn-small" title="Toggle Sidebar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+        
+        <div class="sidebar-search">
+          <input type="text" id="recipe-search" placeholder="Search recipes...">
+        </div>
+        
+        <div class="sidebar-content">
+          <!-- Built-in Transforms -->
+          <div class="recipe-group" data-group="builtin">
+            <div class="recipe-group-header">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+              <span>Built-in</span>
+            </div>
+            <div class="recipe-group-items" id="builtin-recipes">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+          
+          <!-- Dynamic Plugin Categories (populated by JS) -->
+          <div id="dynamic-plugin-categories">
+            <!-- Categories will be dynamically created here based on folder structure -->
+          </div>
+          
+          <!-- Saved Scripts (persistent) -->
+          <div class="recipe-group" data-group="inline">
+            <div class="recipe-group-header">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+              <span>Saved Scripts</span>
+            </div>
+            <div class="recipe-group-items" id="inline-recipes">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+          
+          <!-- Control Flow -->
+          <div class="recipe-group" data-group="control">
+            <div class="recipe-group-header">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+              <span>Control Flow</span>
+            </div>
+            <div class="recipe-group-items" id="control-recipes">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+        </aside>
+        
+        <!-- Resize Handle for sidebar/chain split -->
+        <div class="sidebar-chain-resize" id="sidebar-chain-resize"></div>
+        
+        <!-- Recipe Chain (moved to left panel) -->
+        <div class="recipe-chain-container" id="recipe-chain-container">
+          <div class="recipe-chain-header">
+            <h4>Chain</h4>
+            <div class="chain-header-actions">
+              <button id="btn-expand-chain" class="btn btn-icon btn-tiny" title="Expand All">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <polyline points="9 21 3 21 3 15"></polyline>
+                </svg>
+              </button>
+              <button id="btn-collapse-chain" class="btn btn-icon btn-tiny" title="Collapse All">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="4 14 10 14 10 20"></polyline>
+                  <polyline points="20 10 14 10 14 4"></polyline>
+                </svg>
+              </button>
+              <button id="btn-enable-all-chain" class="btn btn-icon btn-tiny" title="Enable All">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </button>
+              <button id="btn-disable-all-chain" class="btn btn-icon btn-tiny" title="Disable All">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+            <span class="step-progress-compact" id="step-progress">
+              <span class="step-current">0</span>/<span class="step-total">0</span>
+            </span>
+          </div>
+          <div class="recipe-chain" id="recipe-chain">
+            <div class="recipe-chain-empty">
+              Drag recipes here
+            </div>
+          </div>
+          <div class="recipe-chain-options">
+            <label class="chain-option" title="Auto-run on input change">
+              <input type="checkbox" id="auto-run-checkbox">
+              <span>Auto</span>
+            </label>
+            <label class="chain-option" title="Single editor mode">
+              <input type="checkbox" id="single-editor-checkbox">
+              <span>Single</span>
+            </label>
+            <label class="chain-option" title="Simple mode for large files">
+              <input type="checkbox" id="simple-mode-checkbox">
+              <span>Simple</span>
+            </label>
+          </div>
+          <div class="recipe-chain-controls-bottom">
+            <button id="btn-run-all" class="btn btn-primary btn-small" title="Run All (F5)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              <span>Run</span>
+            </button>
+            <button id="btn-step" class="btn btn-secondary btn-small" title="Step (F6)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                <line x1="19" y1="5" x2="19" y2="19"></line>
+              </svg>
+              <span>Step</span>
+            </button>
+            <button id="btn-reset" class="btn btn-secondary btn-small" title="Reset">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="1 4 1 10 7 10"></polyline>
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+              </svg>
+              <span>Reset</span>
+            </button>
+            <button id="btn-open-eval" class="btn btn-secondary btn-small" title="Open Eval Console (Ctrl+Shift+E)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="4 17 10 11 4 5"></polyline>
+                <line x1="12" y1="19" x2="20" y2="19"></line>
+              </svg>
+              <span>Eval</span>
+            </button>
+            <button id="btn-summary" class="btn btn-secondary btn-small" title="View Summary">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Left Panel Resize Handle -->
+      <div class="left-panel-resize" id="left-panel-resize"></div>
+      
+      <!-- Editor Area -->
+      <div class="editor-area">
+        <div class="editors-container">
+          <!-- Input Editor -->
+          <div class="editor-panel" id="input-panel">
+            <div class="editor-header">
+              <span class="editor-title">Input</span>
+              <div class="editor-actions">
+                <button id="btn-wrap-input" class="btn btn-icon btn-small active" title="Toggle Word Wrap">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 6h18"></path>
+                    <path d="M3 12h15a3 3 0 1 1 0 6h-4"></path>
+                    <polyline points="10 16 14 20 10 24"></polyline>
+                    <path d="M3 18h7"></path>
+                  </svg>
+                </button>
+                <button id="btn-lock-input" class="btn btn-icon btn-small" title="Lock Input">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+                  </svg>
+                </button>
+                <button id="btn-clear-input" class="btn btn-icon btn-small" title="Clear">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+                <button id="btn-format-input" class="btn btn-icon btn-small" title="Format (Prettier)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="21" y1="10" x2="3" y2="10"></line>
+                    <line x1="21" y1="6" x2="3" y2="6"></line>
+                    <line x1="21" y1="14" x2="3" y2="14"></line>
+                    <line x1="21" y1="18" x2="3" y2="18"></line>
+                  </svg>
+                </button>
+                <button id="btn-paste-input" class="btn btn-icon btn-small" title="Paste from clipboard">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="editor-container" id="input-editor"></div>
+          </div>
+          
+          <!-- Resize Handle with Action Bar -->
+          <div class="editor-action-bar" id="editor-action-bar">
+            <div class="action-bar-buttons">
+              <button id="undo-btn" class="btn btn-icon btn-small disabled" title="Undo (Ctrl+Z)" disabled>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 7v6h6"></path>
+                  <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path>
+                </svg>
+              </button>
+              <button id="redo-btn" class="btn btn-icon btn-small disabled" title="Redo (Ctrl+Y)" disabled>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 7v6h-6"></path>
+                  <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13"></path>
+                </svg>
+              </button>
+              <div class="action-divider"></div>
+              <button id="swap-btn" class="btn btn-icon btn-small" title="Swap Input ↔ Output">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M7 16l-4-4 4-4"></path>
+                  <path d="M17 8l4 4-4 4"></path>
+                  <path d="M3 12h18"></path>
+                </svg>
+              </button>
+              <button id="apply-to-input-btn" class="btn btn-icon btn-small" title="Apply Output → Input (Ctrl+Enter)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12h14"></path>
+                  <path d="M12 5l7 7-7 7"></path>
+                </svg>
+              </button>
+              <div class="action-divider"></div>
+              <button id="edit-mode-btn" class="btn btn-icon btn-small" title="Toggle Edit Mode (make output editable)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="editor-resize-handle" id="editor-resize-handle"></div>
+          </div>
+          
+          <!-- Output Editor -->
+          <div class="editor-panel" id="output-panel">
+            <div class="editor-header">
+              <span class="editor-title">Output</span>
+              <div class="editor-actions">
+                <button id="btn-wrap-output" class="btn btn-icon btn-small active" title="Toggle Word Wrap">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 6h18"></path>
+                    <path d="M3 12h15a3 3 0 1 1 0 6h-4"></path>
+                    <polyline points="10 16 14 20 10 24"></polyline>
+                    <path d="M3 18h7"></path>
+                  </svg>
+                </button>
+                <button id="btn-lock-output" class="btn btn-icon btn-small active" title="Output Locked - Click to unlock">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </button>
+                <button id="btn-copy-output" class="btn btn-icon btn-small" title="Copy">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
+                <button id="btn-use-as-input" class="btn btn-icon btn-small" title="Use as Input">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 10 20 15 15 20"></polyline>
+                    <path d="M4 4v7a4 4 0 0 0 4 4h12"></path>
+                  </svg>
+                </button>
+                <button id="btn-toggle-diff" class="btn btn-icon btn-small" title="Diff with Initial Input">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="18" rx="2" ry="2"></rect>
+                    <line x1="12" y1="3" x2="12" y2="21"></line>
+                  </svg>
+                </button>
+                <select id="diff-mode-select" class="diff-mode-select" title="Diff Mode">
+                  <option value="sideBySide">Side by Side</option>
+                  <option value="inline">Inline</option>
+                </select>
+              </div>
+            </div>
+            <div class="editor-container" id="output-editor"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tools Panel -->
+      <div class="tools-resize-handle" id="tools-resize-handle"></div>
+      <aside class="tools-panel" id="tools-panel">
+        <div class="tools-tabs">
+          <button class="tool-tab active" data-tab="ast">AST</button>
+          <button class="tool-tab" data-tab="scope">Scope</button>
+          <button class="tool-tab" data-tab="summary">Summary</button>
+        </div>
+        
+        <div class="tools-content">
+          <!-- AST Viewer -->
+          <div class="tool-pane active" id="tool-ast">
+            <div class="tool-header">
+              <span>AST Viewer</span>
+              <div class="ast-source-tabs" id="ast-source-tabs">
+                <div class="ast-source-tab-wrapper">
+                  <button class="ast-source-tab active" data-source="input">Input</button>
+                  <button id="btn-sync-input-ast" class="btn btn-icon btn-tiny ast-sync-btn" data-source="input" title="Sync Input AST with cursor">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                  </button>
+                </div>
+                <div class="ast-source-tab-wrapper">
+                  <button class="ast-source-tab" data-source="output">Output</button>
+                  <button id="btn-sync-output-ast" class="btn btn-icon btn-tiny ast-sync-btn" data-source="output" title="Sync Output AST with cursor">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="tool-actions">
+                <button id="btn-refresh-ast" class="btn btn-icon btn-tiny" title="Refresh AST from Input">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                  </svg>
+                </button>
+                <button id="btn-copy-ast-tree" class="btn btn-icon btn-tiny" title="Copy Full Tree">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
+                <button id="btn-expand-ast" class="btn btn-icon btn-tiny" title="Expand All">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <polyline points="9 21 3 21 3 15"></polyline>
+                  </svg>
+                </button>
+                <button id="btn-collapse-ast" class="btn btn-icon btn-tiny" title="Collapse All">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="4 14 10 14 10 20"></polyline>
+                    <polyline points="20 10 14 10 14 4"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="ast-search">
+              <input type="text" id="ast-search-input" placeholder="Search AST nodes...">
+              <span class="ast-search-results" id="ast-search-results"></span>
+            </div>
+            <div class="ast-tree" id="ast-tree">
+              <div class="ast-empty">Parse code to view AST</div>
+            </div>
+            <div class="ast-resize-handle" id="ast-resize-handle"></div>
+            <div class="ast-details" id="ast-details">
+              <div class="ast-details-empty">Select a node to view details</div>
+            </div>
+          </div>
+          
+          <!-- Scope Analysis -->
+          <div class="tool-pane" id="tool-scope">
+            <div class="tool-header">
+              <span>Scope Analysis</span>
+              <div class="scope-source-tabs" id="scope-source-tabs">
+                <button class="scope-source-tab active" data-source="input">Input</button>
+                <button class="scope-source-tab" data-source="output">Output</button>
+              </div>
+              <button id="btn-refresh-scope" class="btn btn-icon btn-tiny" title="Refresh">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="scope-search-container">
+              <input type="text" id="scope-search" class="scope-search-input" placeholder="Search bindings..." />
+              <span class="scope-search-count" id="scope-search-count"></span>
+            </div>
+            <div class="scope-tree" id="scope-tree">
+              <div class="scope-empty">Analyze code to view scopes</div>
+            </div>
+          </div>
+          
+          <!-- Recipe Summary -->
+          <div class="tool-pane" id="tool-summary">
+            <div class="tool-header">
+              <span>Recipe Summary</span>
+              <button id="btn-refresh-summary" class="btn btn-icon btn-tiny" title="Refresh">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="summary-content" id="tool-summary-content">
+              <div class="summary-empty">Run transforms to see summary</div>
+            </div>
+          </div>
+        </div>
+        
+        <button id="btn-toggle-tools" class="tools-toggle" title="Toggle Tools Panel">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </aside>
+      
+      <!-- Script Panel Resize Handle -->
+      <div class="script-panel-resize" id="script-panel-resize"></div>
+      
+      <!-- Script Panel (Right Side) -->
+      <aside class="script-panel" id="script-panel">
+        <div class="script-panel-header">
+          <h3>Script Editor</h3>
+          <div class="script-panel-actions">
+            <button id="btn-script-wrap" class="btn btn-icon btn-small active" title="Toggle Word Wrap">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18"></path>
+                <path d="M3 12h15a3 3 0 1 1 0 6h-4"></path>
+                <polyline points="13 16 10 19 13 22"></polyline>
+                <path d="M3 18h7"></path>
+              </svg>
+            </button>
+            <button id="btn-script-new" class="btn btn-icon btn-small" title="New Tab (Ctrl+T)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+            <button id="btn-script-run" class="btn btn-icon btn-small btn-accent" title="Run Script (Ctrl+Enter)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </button>
+            <button id="btn-script-add" class="btn btn-icon btn-small" title="Add to Recipe Chain">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+            </button>
+            <button id="btn-script-save" class="btn btn-icon btn-small" title="Save as Plugin">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+            </button>
+            <button id="btn-close-script-panel" class="btn btn-icon btn-small" title="Close Panel (Ctrl+E)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="script-panel-tabs" id="script-panel-tabs">
+          <!-- Tabs will be dynamically added here -->
+        </div>
+        <div class="script-panel-info">
+          <input type="text" id="script-panel-name" placeholder="Script name (optional)">
+        </div>
+        <div class="script-panel-editor" id="script-panel-editor"></div>
+        <div class="script-panel-footer">
+          <div class="script-panel-hint">
+            <code>traverse(visitor)</code> • <code>t</code> for Babel types • <code>config</code> for options
+          </div>
+        </div>
+      </aside>
+      
+      <!-- Eval Panel Resize Handle -->
+      <div class="eval-panel-resize" id="eval-panel-resize"></div>
+      
+      <!-- Eval Panel (Right Side) -->
+      <aside class="eval-panel" id="eval-panel">
+        <div class="eval-panel-header">
+          <h3>⚠️ Eval Console</h3>
+          <div class="eval-panel-actions">
+            <button id="btn-eval-wrap" class="btn btn-icon btn-small active" title="Toggle Word Wrap">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18"></path>
+                <path d="M3 12h15a3 3 0 1 1 0 6h-4"></path>
+                <polyline points="13 16 10 19 13 22"></polyline>
+                <path d="M3 18h7"></path>
+              </svg>
+            </button>
+            <button id="btn-eval-clear" class="btn btn-icon btn-small" title="Clear">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+            <button id="btn-eval-run" class="btn btn-icon btn-small btn-warning" title="Execute Code (Ctrl+Enter)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </button>
+            <button id="btn-close-eval-panel" class="btn btn-icon btn-small" title="Close Panel (Ctrl+Shift+E)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="eval-panel-warning">
+          <strong>⚠️ DANGER:</strong> Code runs with full browser access. Only eval trusted code!
+        </div>
+        <div class="eval-panel-editor" id="eval-panel-editor"></div>
+        <div class="eval-panel-output">
+          <div class="eval-output-header">Output:</div>
+          <pre id="eval-output-content">// Result will appear here</pre>
+        </div>
+      </aside>
+    </main>
+    
+    <!-- Console -->
+    <footer class="console-container expanded" id="console-container">
+      <div class="console-header" id="console-header">
+        <div class="console-tabs">
+          <button class="console-tab active" data-tab="logs">Logs</button>
+          <button class="console-tab" data-tab="errors">Errors</button>
+          <button class="console-tab" data-tab="timing">Timing</button>
+        </div>
+        <div class="console-actions">
+          <button id="btn-clear-console" class="btn btn-icon btn-tiny" title="Clear">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+          <button id="btn-toggle-console" class="btn btn-icon btn-tiny" title="Toggle Console">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="console-content" id="console-content">
+        <div class="console-pane active" id="console-logs"></div>
+        <div class="console-pane" id="console-errors"></div>
+        <div class="console-pane" id="console-timing"></div>
+      </div>
+    </footer>
+    
+    <!-- AST Context Menu -->
+    <div class="ast-context-menu" id="ast-context-menu">
+      <div class="ast-context-menu-header" id="ast-context-menu-header">Node Actions</div>
+      <div class="ast-context-menu-items" id="ast-context-menu-items">
+        <!-- Items will be populated dynamically -->
+      </div>
+    </div>
+    
+    <!-- AST Replace Modal -->
+    <div class="ast-replace-modal" id="ast-replace-modal">
+      <div class="ast-replace-header">
+        <span>Replace with</span>
+        <button class="btn btn-icon btn-tiny" onclick="ASTViewer.closeReplaceModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="ast-replace-body">
+        <div class="form-group">
+          <label>Node Type</label>
+          <select id="ast-replace-type" class="form-select">
+            <optgroup label="Literals">
+              <option value="stringLiteral">StringLiteral</option>
+              <option value="numericLiteral">NumericLiteral</option>
+              <option value="booleanLiteral">BooleanLiteral</option>
+              <option value="nullLiteral">NullLiteral</option>
+              <option value="identifier">Identifier</option>
+            </optgroup>
+            <optgroup label="Expressions">
+              <option value="callExpression">CallExpression</option>
+              <option value="memberExpression">MemberExpression</option>
+              <option value="binaryExpression">BinaryExpression</option>
+              <option value="unaryExpression">UnaryExpression</option>
+              <option value="arrayExpression">ArrayExpression</option>
+              <option value="objectExpression">ObjectExpression</option>
+            </optgroup>
+            <optgroup label="Statements">
+              <option value="expressionStatement">ExpressionStatement</option>
+              <option value="returnStatement">ReturnStatement</option>
+              <option value="emptyStatement">EmptyStatement</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="form-group" id="ast-replace-value-group">
+          <label id="ast-replace-value-label">Value</label>
+          <input type="text" id="ast-replace-value" placeholder="Enter value...">
+        </div>
+        <div class="form-group">
+          <label>Generated Code</label>
+          <pre id="ast-replace-preview" class="ast-replace-preview">// Select a type</pre>
+        </div>
+      </div>
+      <div class="ast-replace-footer">
+        <button class="btn btn-secondary" onclick="ASTViewer.closeReplaceModal()">Cancel</button>
+        <button class="btn btn-accent" onclick="ASTViewer.copyReplaceCode()">Copy Code</button>
+        <button class="btn btn-primary" onclick="ASTViewer.applyReplace()">Generate Transform</button>
+      </div>
+    </div>
+    
+    <!-- Modals -->
+    <div class="modal-overlay" id="modal-overlay"></div>
+    
+
+    
+    <!-- Plugin Editor Modal -->
+    <div class="modal modal-large" id="modal-plugin-editor">
+      <div class="modal-header">
+        <h3 id="plugin-editor-title">Edit Plugin</h3>
+        <button class="btn btn-icon modal-close" data-modal="modal-plugin-editor">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="plugin-edit-id">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="plugin-name">Name</label>
+            <input type="text" id="plugin-name" placeholder="Plugin Name">
+          </div>
+          <div class="form-group">
+            <label for="plugin-description">Description</label>
+            <input type="text" id="plugin-description" placeholder="What this plugin does...">
+          </div>
+        </div>
+        <div class="form-row" id="plugin-folder-row">
+          <div class="form-group">
+            <label for="plugin-folder">Save to Folder</label>
+            <select id="plugin-folder">
+              <option value="">Saved Scripts (default)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="plugin-new-folder">Or New Folder</label>
+            <input type="text" id="plugin-new-folder" placeholder="e.g., string-decoders">
+          </div>
+        </div>
+        <div class="form-group form-group-fill">
+          <label>Plugin Code</label>
+          <div class="plugin-editor-container" id="plugin-editor-container"></div>
+          <div class="form-hint">
+            Use <code>traverse(visitor)</code> to modify the AST. Access <code>t</code> for Babel types, <code>config</code> for options.
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" id="btn-delete-plugin">Delete</button>
+        <button class="btn btn-secondary" id="btn-save-draft" style="display: none;">Save as Draft</button>
+        <div class="modal-footer-spacer"></div>
+        <button class="btn btn-secondary" data-modal="modal-plugin-editor">Cancel</button>
+        <button class="btn btn-accent" id="btn-save-as-inline" style="display: none;">Save as Custom</button>
+        <button class="btn btn-success" id="btn-apply-to-chain" style="display: none;">Apply to Chain</button>
+        <button class="btn btn-primary" id="btn-save-plugin">Save Script</button>
+      </div>
+    </div>
+    
+    <!-- Save as Plugin Modal (with folder selection) -->
+    <div class="modal" id="modal-save-plugin">
+      <div class="modal-header">
+        <h3>Save as Plugin</h3>
+        <button class="btn btn-icon modal-close" data-modal="modal-save-plugin">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="save-plugin-name">Plugin Name</label>
+          <input type="text" id="save-plugin-name" placeholder="My Plugin">
+        </div>
+        <div class="form-group">
+          <label for="save-plugin-description">Description</label>
+          <input type="text" id="save-plugin-description" placeholder="What this plugin does...">
+        </div>
+        
+        <!-- Parameters Section -->
+        <div class="form-group">
+          <div class="form-group-header">
+            <label>Config Parameters</label>
+            <button type="button" class="btn btn-tiny btn-secondary" id="btn-add-plugin-param">+ Add</button>
+          </div>
+          <div class="form-hint">Define parameters that users can configure when using this plugin</div>
+          <div class="plugin-params-list" id="plugin-params-list">
+            <!-- Parameters added dynamically -->
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="save-plugin-folder">Save to Folder</label>
+          <select id="save-plugin-folder">
+            <option value="">Saved Scripts (default)</option>
+            <!-- Populated dynamically with existing folders -->
+          </select>
+          <div class="form-hint">Choose an existing folder or create a new one</div>
+        </div>
+        <div class="form-group">
+          <label for="save-plugin-new-folder">Or Create New Folder</label>
+          <input type="text" id="save-plugin-new-folder" placeholder="e.g., string-decoders">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-modal="modal-save-plugin">Cancel</button>
+        <button class="btn btn-primary" id="btn-confirm-save-plugin">Save Plugin</button>
+      </div>
+    </div>
+    
+    <!-- Recipe Config Modal -->
+    <div class="modal" id="modal-recipe-config">
+      <div class="modal-header">
+        <h3>Configure Recipe</h3>
+        <button class="btn btn-icon modal-close" data-modal="modal-recipe-config">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" id="recipe-config-body">
+        <!-- Populated dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-modal="modal-recipe-config">Cancel</button>
+        <button class="btn btn-primary" id="btn-apply-config">Apply</button>
+      </div>
+    </div>
+    
+    <!-- Save Project Modal -->
+    <div class="modal modal-wide" id="modal-save-project">
+      <div class="modal-header">
+        <h3>Save Project</h3>
+        <button class="btn btn-icon modal-close" data-modal="modal-save-project">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Save mode selection -->
+        <div class="form-group">
+          <label>Save Mode</label>
+          <div class="save-mode-options">
+            <label class="radio-option">
+              <input type="radio" name="save-mode" value="update" id="save-mode-update">
+              <span class="radio-label">Update Current Project</span>
+              <span class="radio-desc" id="save-mode-update-desc">Overwrite the existing project</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="save-mode" value="new" id="save-mode-new" checked>
+              <span class="radio-label">Save as New Project</span>
+              <span class="radio-desc">Create a new project with this data</span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- Existing project selection (for overwriting) -->
+        <div class="form-group" id="overwrite-project-group" style="display: none;">
+          <label for="overwrite-project-select">Select Project to Overwrite</label>
+          <select id="overwrite-project-select">
+            <option value="">-- Select a project --</option>
+          </select>
+          <div class="overwrite-warning" id="overwrite-warning">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span>This will permanently overwrite the selected project!</span>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="project-name">Project Name <span class="required">*</span></label>
+          <input type="text" id="project-name" placeholder="My Deobfuscation Project">
+        </div>
+        <div class="form-group">
+          <label for="project-description">Description</label>
+          <textarea id="project-description" placeholder="Notes about this project..." rows="3"></textarea>
+        </div>
+        
+        <!-- Project contents summary -->
+        <div class="form-group">
+          <label>Project Contents</label>
+          <div class="project-contents-summary" id="project-contents-summary">
+            <div class="content-item">
+              <span class="content-label">Input Code:</span>
+              <span class="content-value" id="summary-input-lines">0 lines</span>
+            </div>
+            <div class="content-item">
+              <span class="content-label">Output Code:</span>
+              <span class="content-value" id="summary-output-lines">0 lines</span>
+            </div>
+            <div class="content-item">
+              <span class="content-label">Recipe Chain:</span>
+              <span class="content-value" id="summary-recipe-count">0 transforms</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-cancel-save" data-modal="modal-save-project">Cancel</button>
+        <button class="btn btn-primary" id="btn-confirm-save">Save Project</button>
+      </div>
+    </div>
+    
+    <!-- Unsaved Changes Confirmation Modal -->
+    <div class="modal" id="modal-unsaved-changes">
+      <div class="modal-header">
+        <h3>Unsaved Changes</h3>
+        <button class="btn btn-icon modal-close" data-modal="modal-unsaved-changes">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 1rem;">You have unsaved changes that will be lost. What would you like to do?</p>
+        <p style="color: var(--text-muted); font-size: 0.9em;">
+          <strong>Save</strong> - Save your work first, then continue<br>
+          <strong>Discard</strong> - Lose all unsaved changes and continue<br>
+          <strong>Cancel</strong> - Go back and keep working
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-unsaved-cancel">Cancel</button>
+        <button class="btn btn-danger" id="btn-unsaved-discard">Discard Changes</button>
+        <button class="btn btn-primary" id="btn-unsaved-save">Save First</button>
+      </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div class="modal" id="modal-settings">
+      <div class="modal-header">
+        <h3>Settings</h3>
+        <button class="btn btn-icon modal-close" data-modal="modal-settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-section">
+          <h4>Default Chain Options</h4>
+          <div class="settings-group">
+            <label class="settings-checkbox">
+              <input type="checkbox" id="setting-default-auto">
+              <span>Auto-run on input change</span>
+            </label>
+            <label class="settings-checkbox">
+              <input type="checkbox" id="setting-default-single">
+              <span>Single editor mode</span>
+            </label>
+            <label class="settings-checkbox">
+              <input type="checkbox" id="setting-default-simple">
+              <span>Simple mode for large files</span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="settings-section">
+          <h4>AST Viewer - Show Properties</h4>
+          <div class="settings-group">
+            <label class="settings-checkbox">
+              <input type="checkbox" id="setting-ast-comments">
+              <span>Comments (leadingComments, trailingComments, innerComments)</span>
+            </label>
+            <label class="settings-checkbox">
+              <input type="checkbox" id="setting-ast-loc">
+              <span>Location info (loc, start, end, range)</span>
+            </label>
+            <label class="settings-checkbox">
+              <input type="checkbox" id="setting-ast-extra">
+              <span>Extra metadata (extra, raw values)</span>
+            </label>
+            <label class="settings-checkbox">
+              <input type="checkbox" id="setting-ast-tokens">
+              <span>Tokens and directives</span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="settings-section">
+          <h4>Keyboard Shortcuts</h4>
+          <div class="keybindings-list">
+            <div class="keybinding-item">
+              <span class="keybinding-action">Run All Transforms</span>
+              <span class="keybinding-keys"><kbd>Ctrl</kbd><span class="key-sep">+</span><kbd>Enter</kbd></span>
+            </div>
+            <div class="keybinding-item">
+              <span class="keybinding-action">Run Step</span>
+              <span class="keybinding-keys"><kbd>Ctrl</kbd><span class="key-sep">+</span><kbd>Shift</kbd><span class="key-sep">+</span><kbd>Enter</kbd></span>
+            </div>
+            <div class="keybinding-item">
+              <span class="keybinding-action">Toggle Script Panel</span>
+              <span class="keybinding-keys"><kbd>Ctrl</kbd><span class="key-sep">+</span><kbd>E</kbd></span>
+            </div>
+            <div class="keybinding-item">
+              <span class="keybinding-action">Toggle Eval Console</span>
+              <span class="keybinding-keys"><kbd>Ctrl</kbd><span class="key-sep">+</span><kbd>Shift</kbd><span class="key-sep">+</span><kbd>E</kbd></span>
+            </div>
+            <div class="keybinding-item">
+              <span class="keybinding-action">Save Project</span>
+              <span class="keybinding-keys"><kbd>Ctrl</kbd><span class="key-sep">+</span><kbd>S</kbd></span>
+            </div>
+            <div class="keybinding-item">
+              <span class="keybinding-action">Format Code</span>
+              <span class="keybinding-keys"><kbd>Ctrl</kbd><span class="key-sep">+</span><kbd>Shift</kbd><span class="key-sep">+</span><kbd>F</kbd></span>
+            </div>
+            <div class="keybinding-item">
+              <span class="keybinding-action">Close Panel / Modal</span>
+              <span class="keybinding-keys"><kbd>Esc</kbd></span>
+            </div>
+            <div class="keybinding-item">
+              <span class="keybinding-action">Undo</span>
+              <span class="keybinding-keys"><kbd>Ctrl</kbd><span class="key-sep">+</span><kbd>Z</kbd></span>
+            </div>
+            <div class="keybinding-item">
+              <span class="keybinding-action">Redo</span>
+              <span class="keybinding-keys"><kbd>Ctrl</kbd><span class="key-sep">+</span><kbd>Y</kbd></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-modal="modal-settings">Cancel</button>
+        <button class="btn btn-primary" id="btn-save-settings">Save Settings</button>
+      </div>
+    </div>
+    
+    <!-- Project Manager Modal -->
+    <div class="modal" id="modal-project-manager">
+      <div class="modal-header">
+        <h3>Project Manager</h3>
+        <button class="btn btn-icon modal-close" data-modal="modal-project-manager">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="project-info" id="project-info">
+          <div class="form-group">
+            <label for="edit-project-name">Project Name</label>
+            <input type="text" id="edit-project-name" placeholder="Project Name">
+          </div>
+          <div class="form-group">
+            <label for="edit-project-description">Description</label>
+            <textarea id="edit-project-description" placeholder="Project description and notes..." rows="4"></textarea>
+          </div>
+          <div class="project-meta" id="project-meta">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" id="btn-delete-project">Delete Project</button>
+        <div class="modal-footer-spacer"></div>
+        <button class="btn btn-secondary" data-modal="modal-project-manager">Cancel</button>
+        <button class="btn btn-primary" id="btn-update-project">Update Project</button>
+      </div>
+    </div>
+    
+    <!-- Summary Modal -->
+    <div class="modal modal-large" id="modal-summary">
+      <div class="modal-header">
+        <h3>Deobfuscation Summary</h3>
+        <button class="btn btn-icon modal-close" data-modal="modal-summary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="summary-content" id="summary-content">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-copy-summary">Copy Summary</button>
+        <button class="btn btn-primary" data-modal="modal-summary">Close</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Monaco Editor Loader -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+  
+  <!-- App Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/recipeManager.js"></script>
+  <script src="js/astViewer.js"></script>
+  <script src="js/stringDecoder.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

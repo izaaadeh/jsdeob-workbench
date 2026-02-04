@@ -1,0 +1,36 @@
+{
+  "name": "jsdeob-workbench",
+  "version": "1.0.0",
+  "description": "A modular JavaScript deobfuscation workbench with visual recipe chaining",
+  "main": "server/index.js",
+  "bin": "server/index.js",
+  "scripts": {
+    "start": "node --stack-size=65536 server/index.js",
+    "dev": "node --stack-size=65536 --watch server/index.js",
+    "build:babel": "esbuild scripts/babel-bundle-entry.js --bundle --format=iife --global-name=BabelBundle --outfile=client/js/babel-bundle.js",
+    "build": "npm run build:babel && pkg . --targets node18-win-x64 --output dist/jsdeob-workbench.exe",
+    "build:all": "npm run build:babel && pkg . --targets node18-win-x64,node18-linux-x64,node18-macos-x64 --output dist/jsdeob-workbench"
+  },
+  "pkg": {
+    "assets": [
+      "client/**/*",
+      "plugins/**/*",
+      "server/transforms/**/*",
+      "node_modules/monaco-editor/min/**/*"
+    ],
+    "outputPath": "dist"
+  },
+  "dependencies": {
+    "@babel/core": "^7.23.0",
+    "@babel/generator": "^7.29.0",
+    "@babel/parser": "^7.29.0",
+    "@babel/traverse": "^7.29.0",
+    "@babel/types": "^7.29.0",
+    "express": "^4.18.2",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.2",
+    "pkg": "^5.8.1"
+  }
+}
